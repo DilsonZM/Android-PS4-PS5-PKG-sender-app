@@ -76,6 +76,8 @@ GitHub: https://github.com/DilsonZM
 - Contenido: no contiene anuncios ni compras.
 - Privacidad: no recopila datos; todo queda en la LAN y en el almacenamiento
   local. El servidor no se expone a Internet.
+- Donaciones: enlace externo de PayPal (https://paypal.me/dilsonzuleta); no se
+  usa Google Play Billing.
 - Permisos destacados:
   - `INTERNET`: comunicación local.
   - `MANAGE_EXTERNAL_STORAGE` (opcional): escanear la carpeta Download.

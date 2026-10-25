@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.2 — 2026-10-25
+
+- Icono de café en la barra superior de Inicio y botón de apoyo en
+  Ajustes → Creador.
+- Enlace de donación voluntaria por PayPal: https://paypal.me/dilsonzuleta
+- No usa Google Play Billing; abre PayPal en el navegador/app.
+- Versión 1.0.2 (versionCode 3).
+
 ## 1.0.1 — 2026-10-25
 
 - Crédito explícito a **njzydark/PS4RPI**, port OOSDK de flatZ RPI que se

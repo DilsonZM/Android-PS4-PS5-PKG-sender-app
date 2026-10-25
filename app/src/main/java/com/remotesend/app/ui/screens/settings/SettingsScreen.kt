@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.DeleteSweep
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.LocalCafe
 import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,6 +46,7 @@ import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.remotesend.app.core.AppLinks
 import com.remotesend.app.domain.model.FrameRateMode
 import com.remotesend.app.domain.model.ThemeMode
 import com.remotesend.app.ui.CollectUiMessages
@@ -347,10 +349,28 @@ fun SettingsScreen(
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                TextButton(
-                    onClick = { uriHandler.openUri("https://github.com/DilsonZM") },
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
                 ) {
-                    Text("github.com/DilsonZM")
+                    TextButton(
+                        onClick = { uriHandler.openUri("https://github.com/DilsonZM") },
+                    ) {
+                        Text("github.com/DilsonZM")
+                    }
+                    TextButton(
+                        onClick = { uriHandler.openUri(AppLinks.PAYPAL_SUPPORT_URL) },
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.LocalCafe,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp),
+                        )
+                        Text(
+                            text = "Invítame un café",
+                            modifier = Modifier.padding(start = 4.dp),
+                        )
+                    }
                 }
             }
 

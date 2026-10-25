@@ -10,6 +10,12 @@ automatización y gestión de datos.
 - GitHub: https://github.com/DilsonZM
 - Proyecto: RemoteSend Android
 
+## Apoyar
+
+Si quieres apoyar el mantenimiento, puedes invitar un café por PayPal:
+
+https://paypal.me/dilsonzuleta
+
 ## Proyecto original
 
 - **PS4 Remote PKG Sender V2** — Gkiokan  

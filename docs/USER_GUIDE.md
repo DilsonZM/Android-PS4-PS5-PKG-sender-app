@@ -139,7 +139,17 @@ Qué probar:
 No se puede superar el límite del enlace/consola desde la app. El servidor
 soporta más de 20 MB/s.
 
-## 9. Solución de problemas
+## 9. Apoyar el proyecto
+
+El icono de taza de la barra superior de Inicio y el botón de **Ajustes →
+Creador** abren PayPal:
+
+https://paypal.me/dilsonzuleta
+
+Es una donación voluntaria; no desbloquea funciones ni cambia el comportamiento
+de la app.
+
+## 10. Solución de problemas
 
 | Síntoma | Causa / solución |
 |---|---|
@@ -153,7 +163,7 @@ soporta más de 20 MB/s.
 | Sin espacio | Código `2157510789`; libera espacio en la consola |
 | Pantalla apagada corta la descarga | Mantén la notificación del servicio y desactiva optimizaciones del fabricante |
 
-## 10. Capturas
+## 11. Capturas
 
 - Inicio: `screenshots/01-home.png`
 - Consola conectada: `screenshots/03-console-connected.png`

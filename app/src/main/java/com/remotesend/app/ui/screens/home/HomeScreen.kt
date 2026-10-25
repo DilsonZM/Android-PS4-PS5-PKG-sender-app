@@ -12,6 +12,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.BugReport
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.Inventory2
+import androidx.compose.material.icons.outlined.LocalCafe
 import androidx.compose.material.icons.automirrored.outlined.List
 import androidx.compose.material.icons.outlined.Pause
 import androidx.compose.material.icons.outlined.PlayArrow
@@ -30,10 +31,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.remotesend.app.core.AppLinks
 import com.remotesend.app.domain.model.QueueStatus
 import com.remotesend.app.domain.model.ServerRuntime
 import com.remotesend.app.domain.util.PkgNaming
@@ -60,12 +63,24 @@ fun HomeScreen(
     val viewModel: HomeViewModel = appViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     CollectUiMessages(viewModel.events)
+    val uriHandler = LocalUriHandler.current
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
             title = "RemoteSend",
             subtitle = "Enviar PKG a PS4 y PS5",
             actions = {
+                IconButton(
+                    onClick = {
+                        runCatching { uriHandler.openUri(AppLinks.PAYPAL_SUPPORT_URL) }
+                    },
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.LocalCafe,
+                        contentDescription = "Invítame un café con PayPal",
+                        tint = MaterialTheme.colorScheme.tertiary,
+                    )
+                }
                 ConsoleStatusAction(
                     connection = state.connection,
                     onClick = viewModel::checkConsole,

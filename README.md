@@ -188,6 +188,15 @@ docs/                análisis, API, arquitectura, guía, testing y Play Store
 - `docs/screenshots/11-queue-remove-dialog.png`
 - `docs/screenshots/12-creator.png`
 
+## Apoyar el proyecto
+
+Si RemoteSend te resulta útil, puedes invitar un café por PayPal desde el icono
+de taza de la barra superior o desde **Ajustes → Creador**:
+
+https://paypal.me/dilsonzuleta
+
+La donación es voluntaria y no desbloquea funciones.
+
 ## Autor
 
 **Dilson Zuleta Molina (DilsonZM)** — Ingeniero Electrónico y especialista en
