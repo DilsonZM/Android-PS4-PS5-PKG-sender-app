@@ -39,8 +39,41 @@ class ConsoleDetectorTest {
 
         assertTrue(result.reachable)
         assertEquals(ConsoleType.PS4_RPI, result.type)
+        assertEquals(server.port, result.httpPort)
         assertEquals(ConsoleConnectionStatus.CONNECTED, detector.connection.value.status)
         assertEquals(ConsoleType.PS4_RPI, detector.connection.value.type)
+        server.shutdown()
+    }
+
+    @Test
+    fun `auto detection falls back to PS4RPI port 12801`() = runBlocking {
+        val server = MockWebServer()
+        try {
+            server.start(12801)
+        } catch (exception: Exception) {
+            org.junit.Assume.assumeNoException("Puerto 12801 ocupado en el host", exception)
+        }
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .setBody("""{"status":"success","exists":false}"""),
+        )
+        val closedPort = ServerSocket(0).use { it.localPort }
+        val detector = ConsoleDetector(ConsoleClientFactory(NoOpLogger), NoOpLogger)
+
+        val result = detector.detect(
+            ConsoleConfig(
+                type = ConsoleType.AUTO,
+                host = "127.0.0.1",
+                httpPort = closedPort,
+                tcpPort = closedPort,
+                timeoutMs = 700,
+            ),
+        )
+
+        assertTrue(result.reachable)
+        assertEquals(ConsoleType.PS4_RPI, result.type)
+        assertEquals(12801, result.httpPort)
         server.shutdown()
     }
 

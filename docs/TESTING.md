@@ -2,7 +2,7 @@
 
 ## 1. Suite automatizada
 
-Actualmente hay **54 pruebas** unitarias/de integración local (JVM), sin
+Actualmente hay **55 pruebas** unitarias/de integración local (JVM), sin
 dependencia de una consola.
 
 ```bash
@@ -28,7 +28,8 @@ dependencia de una consola.
 ## 2. Validación en dispositivo real
 
 Dispositivo: **NX769J / RedMagic, Android 16**.  
-Consola: **PS4 con flatZ RPI en 192.168.18.12:12801**.  
+Consola: **PS4 con PS4RPI de njzydark (port OOSDK de flatZ RPI) en
+192.168.18.12:12801**.  
 Teléfono: `wlan0`, 192.168.18.119, Wi-Fi 5 GHz.
 
 Resultados:
@@ -99,7 +100,7 @@ Resultado observado: ~22 MB/s (dos saltos Wi-Fi, 5 GHz). La PS4 recibió
 ```
 
 Lint pasa (solo advertencias de versiones y del permiso de almacenamiento). El
-APK debug se genera en `app/build/outputs/apk/debug/`.
+APK debug se genera en `app/build/outputs/apk/debug/RemoteSend.apk`.
 
 ## 6. Seguridad
 

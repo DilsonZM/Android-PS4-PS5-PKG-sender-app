@@ -9,7 +9,7 @@
 - Depende de homebrew de PS4/PS5 y de marcas de Sony.
 - La app está pensada para sideload/GitHub Releases.
 
-La vía recomendada es **GitHub Releases** con el APK firmado y estas notas.
+La vía recomendada es **GitHub Releases** con el APK firmado (RemoteSend.apk) y estas notas.
 
 ## Ficha corta
 
@@ -62,6 +62,13 @@ velocidad.”
 6. Ajustes con 60/120 FPS.
 
 Archivos disponibles en `docs/screenshots/`.
+
+## Desarrollador
+
+**Dilson Zuleta Molina (DilsonZM)**  
+Ingeniero Electrónico · Visual Analytics & Big Data  
+Power Platform (Power BI, Power Apps, Power Automate), Python y SQL.  
+GitHub: https://github.com/DilsonZM
 
 ## Clasificación y privacidad
 

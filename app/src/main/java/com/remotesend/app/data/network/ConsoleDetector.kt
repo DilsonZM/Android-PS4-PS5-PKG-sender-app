@@ -17,6 +17,12 @@ class ConsoleDetector(
     private val factory: ConsoleClientFactory,
     private val logger: AppLogger,
 ) {
+    companion object {
+        const val RPI_PORT_FLATZ = 12800
+        const val RPI_PORT_PS4RPI = 12801
+        const val TCP_PORT = 9090
+    }
+
     private val _connection = MutableStateFlow(ConsoleConnectionState())
     val connection: StateFlow<ConsoleConnectionState> = _connection.asStateFlow()
 
@@ -58,21 +64,34 @@ class ConsoleDetector(
                 message = health.message,
                 latencyMs = health.latencyMs,
                 ambiguousTcp = config.type.isTcpBased,
+                httpPort = if (config.type == ConsoleType.PS4_RPI) config.httpPort else null,
+                tcpPort = if (config.type.isTcpBased) config.tcpPort else null,
             )
         }
 
-        val rpiHealth = factory.create(ConsoleType.PS4_RPI, config).checkConnection()
-        if (rpiHealth.reachable) {
-            logger.success(
-                "Detección",
-                "PS4 con flatZ RPI detectada en ${config.host}:${config.httpPort}",
-            )
-            return DetectionResult(
-                reachable = true,
-                type = ConsoleType.PS4_RPI,
-                message = "PS4 con flatZ RPI detectada",
-                latencyMs = rpiHealth.latencyMs,
-            )
+        val rpiPorts = listOf(config.httpPort, RPI_PORT_PS4RPI, RPI_PORT_FLATZ)
+            .distinct()
+        var lastRpiHealth: com.remotesend.app.domain.model.ConsoleHealth? = null
+        for (port in rpiPorts) {
+            val health = factory.create(
+                ConsoleType.PS4_RPI,
+                config.copy(httpPort = port),
+            ).checkConnection()
+            lastRpiHealth = health
+            if (health.reachable) {
+                logger.success(
+                    "Detección",
+                    "PS4 RPI detectada en ${config.host}:$port",
+                )
+                return DetectionResult(
+                    reachable = true,
+                    type = ConsoleType.PS4_RPI,
+                    message = "PS4 RPI accesible en ${config.host}:$port" +
+                        " (flatZ 12800 / PS4RPI 12801)",
+                    latencyMs = health.latencyMs,
+                    httpPort = port,
+                )
+            }
         }
 
         val tcpType = if (config.preferPs5ForTcp) {
@@ -80,27 +99,36 @@ class ConsoleDetector(
         } else {
             ConsoleType.PS4_GOLDHEN
         }
-        val tcpHealth = factory.create(tcpType, config).checkConnection()
-        if (tcpHealth.reachable) {
-            logger.success(
-                "Detección",
-                "Socket RPI detectado en ${config.host}:${config.tcpPort}",
-            )
-            return DetectionResult(
-                reachable = true,
-                type = tcpType,
-                message = "Puerto ${config.tcpPort} abierto. Se asumió ${
-                    if (tcpType == ConsoleType.PS5_ETAHEN) "PS5 etaHEN" else "PS4 GoldHEN"
-                }; cámbialo manualmente si no es correcto.",
-                latencyMs = tcpHealth.latencyMs,
-                ambiguousTcp = true,
-            )
+        val tcpPorts = listOf(config.tcpPort, TCP_PORT).distinct()
+        var lastTcpHealth: com.remotesend.app.domain.model.ConsoleHealth? = null
+        for (port in tcpPorts) {
+            val health = factory.create(
+                tcpType,
+                config.copy(tcpPort = port),
+            ).checkConnection()
+            lastTcpHealth = health
+            if (health.reachable) {
+                logger.success(
+                    "Detección",
+                    "Socket RPI detectado en ${config.host}:$port",
+                )
+                return DetectionResult(
+                    reachable = true,
+                    type = tcpType,
+                    message = "Puerto $port abierto. Se asumió ${
+                        if (tcpType == ConsoleType.PS5_ETAHEN) "PS5 etaHEN" else "PS4 GoldHEN"
+                    }; cámbialo manualmente si no es correcto.",
+                    latencyMs = health.latencyMs,
+                    ambiguousTcp = true,
+                    tcpPort = port,
+                )
+            }
         }
 
         return DetectionResult(
             reachable = false,
-            message = "No se detectó la consola. RPI: ${rpiHealth.message}. " +
-                "TCP: ${tcpHealth.message}",
+            message = "No se detectó la consola. RPI: ${lastRpiHealth?.message}. " +
+                "TCP: ${lastTcpHealth?.message}",
         )
     }
 }

@@ -170,6 +170,13 @@ fun ConsoleScreen() {
                     )
                 }
 
+                Text(
+                    text = "flatZ original: 12800 · PS4RPI de njzydark: 12801. " +
+                        "En modo automático se prueban ambos puertos.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     OutlinedTextField(
                         value = form.timeoutMs,

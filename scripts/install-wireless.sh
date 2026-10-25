@@ -2,7 +2,7 @@
 set -euo pipefail
 
 TARGET="${1:?Uso: $0 <ip:puerto> [ruta-apk]}"
-APK="${2:-app/build/outputs/apk/debug/app-debug.apk}"
+APK="${2:-app/build/outputs/apk/debug/RemoteSend.apk}"
 ADB="${ADB:-adb}"
 
 if [[ ! -f "$APK" ]]; then

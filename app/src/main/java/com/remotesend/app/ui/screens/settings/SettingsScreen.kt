@@ -21,6 +21,7 @@ import androidx.compose.material.icons.outlined.DeleteSweep
 import androidx.compose.material.icons.outlined.Download
 import androidx.compose.material.icons.outlined.FileUpload
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.outlined.Person
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
@@ -29,6 +30,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedCard
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -39,6 +41,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -305,6 +308,49 @@ fun SettingsScreen(
                         modifier = Modifier.size(18.dp),
                     )
                     Text("Vaciar registros", modifier = Modifier.padding(start = 6.dp))
+                }
+            }
+
+            SectionCard(title = "Creador") {
+                val uriHandler = LocalUriHandler.current
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                ) {
+                    Surface(
+                        shape = androidx.compose.foundation.shape.CircleShape,
+                        color = MaterialTheme.colorScheme.primaryContainer,
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Person,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onPrimaryContainer,
+                            modifier = Modifier.padding(12.dp).size(26.dp),
+                        )
+                    }
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text(
+                            text = "Dilson Zuleta Molina",
+                            style = MaterialTheme.typography.titleMedium,
+                        )
+                        Text(
+                            text = "Ingeniero Electrónico · Visual Analytics & Big Data",
+                            style = MaterialTheme.typography.bodySmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                Text(
+                    text = "Especialista en Power Platform (Power BI, Power Apps, Power Automate), " +
+                        "Python y SQL. Más de 6 años liderando soluciones de analítica, " +
+                        "automatización y gestión de datos.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                TextButton(
+                    onClick = { uriHandler.openUri("https://github.com/DilsonZM") },
+                ) {
+                    Text("github.com/DilsonZM")
                 }
             }
 

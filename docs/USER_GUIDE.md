@@ -4,8 +4,11 @@
 
 ### PS4
 
-1. Inicia **flatZ Remote Package Installer** (RPI) o **GoldHEN** con RPI.
-2. Comprueba el puerto: normalmente `12800` (flatZ) o `9090` (GoldHEN).
+1. Inicia **PS4RPI de njzydark** (recomendado, puerto `12801`), **flatZ RPI**
+   (`12800`) o **GoldHEN** con RPI (`9090`).
+2. PS4RPI es el port OOSDK de flatZ RPI:  
+   https://github.com/njzydark/PS4RPI
+3. La detección automática y **Escanear red** prueban 12800 y 12801.
 3. Conecta la PS4 por LAN a un puerto Gigabit si es posible.
 4. En **Ajustes → Red → Ver estado de conexión** revisa la velocidad de enlace.
 
@@ -31,6 +34,7 @@ Puedes escribir la IP o usar **Escanear red**.
 - Si encuentra la consola, aparecerá una tarjeta con IP y puertos. Tócala para
   rellenar el formulario.
 - `253 de 253` significa que terminó de revisar todos los hosts. No es un error.
+- Se prueban 12800 (flatZ) y 12801 (PS4RPI de njzydark).
 - Si no encuentra nada: revisa RPI/etaHEN, la misma red y el aislamiento de
   clientes del router.
 
@@ -157,3 +161,4 @@ soporta más de 20 MB/s.
 - Progreso: `screenshots/05-queue-progress.png`
 - Inicio durante instalación: `screenshots/06-home-progress.png`
 - Resultado del escaneo: `screenshots/07-scan-result.png`
+- Creador: `screenshots/12-creator.png`

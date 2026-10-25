@@ -35,6 +35,10 @@ descarga. La app:
 
 ## Cómo se construyó
 
+La app que recibe las órdenes en la PS4 es **PS4RPI** de **njzydark**, un port
+OOSDK de flatZ RPI con puerto 12801 por defecto:
+https://github.com/njzydark/PS4RPI
+
 El punto de partida fue el proyecto Electron **PS4 Remote PKG Sender V2** de
 Gkiokan (v2.10.4). Se hizo un análisis REA de su servidor Express, sus clientes
 PS4/PS5, su cola y sus estados. A partir de ese comportamiento se diseñó un clon
@@ -64,3 +68,12 @@ base → actualización → DLC de forma automática.
   inventa un porcentaje.
 - Documentar límites: el enlace de la consola/RPI puede limitar a ~100 Mbps
   aunque el teléfono pueda más.
+
+
+## Autor
+
+**Dilson Zuleta Molina (DilsonZM)** — Ingeniero Electrónico y especialista en
+Visual Analytics & Big Data. Experto en Power Platform (Power BI, Power Apps,
+Power Automate), Python y SQL. Más de 6 años liderando soluciones de analítica,
+automatización y gestión de datos.  
+GitHub: https://github.com/DilsonZM

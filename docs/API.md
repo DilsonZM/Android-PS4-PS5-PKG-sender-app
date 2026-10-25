@@ -70,8 +70,14 @@ Se permiten `GET`, `HEAD` y `OPTIONS` desde cualquier origen local.
 
 ## 2. flatZ RPI (PS4)
 
-Base: `http://<IP>:<puerto>` (12800 estándar; el usuario puede usar otro, por
-ejemplo 12801). Todas las peticiones son `POST` con JSON.
+Base: `http://<IP>:<puerto>`.
+- flatZ original: **12800**.
+- **PS4RPI de njzydark** (port OOSDK, la app que se instala en la consola):
+  **12801** por defecto.
+- También se admite cualquier puerto configurado.
+
+Todas las peticiones son `POST` con JSON. La detección automática y el escaneo
+prueban 12800 y 12801.
 
 | Endpoint | Cuerpo | Uso |
 |---|---|---|

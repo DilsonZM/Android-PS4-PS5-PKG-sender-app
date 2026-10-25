@@ -58,7 +58,7 @@ el puerto 12801**:
 - Auto-avance opcional de la cola.
 - Cliente **PS4 flatZ RPI**, **PS4 GoldHEN** y **PS5 etaHEN**.
 - Detección automática de consola y **escaneo de red** usando los puertos
-  configurados (más los estándar 12800/9090).
+  configurados y los estándar **12800 (flatZ)** / **12801 (PS4RPI)** / 9090.
 - Servicio en primer plano para mantener el servidor y la cola activos.
 - Notificaciones de progreso, finalización y error.
 - Tema claro/oscuro, color dinámico y selector de **60/120 FPS** en Ajustes.
@@ -70,7 +70,8 @@ el puerto 12801**:
 - Android 7.0 (API 24) o superior.
 - Teléfono y consola en la misma red local.
 - El router no debe tener aislamiento de clientes (AP isolation).
-- PS4: flatZ Remote Package Installer (por defecto 12800) o GoldHEN RPI (9090).
+- PS4: flatZ Remote Package Installer (12800), **PS4RPI de njzydark** (12801)
+  o GoldHEN RPI (9090).
 - PS5: etaHEN con RPI habilitado (9090).
 - Compilar: JDK 17 o 21, Android SDK 36 y Gradle Wrapper incluido.
 
@@ -83,7 +84,7 @@ el puerto 12801**:
 APK:
 
 ```text
-app/build/outputs/apk/debug/app-debug.apk
+app/build/outputs/apk/debug/RemoteSend.apk
 ```
 
 Pruebas y lint:
@@ -92,14 +93,14 @@ Pruebas y lint:
 ./gradlew :app:testDebugUnitTest :app:lintDebug
 ```
 
-La suite actual contiene **54 pruebas** unitarias/de integración local.
+La suite actual contiene **55 pruebas** unitarias/de integración local.
 
 ## Instalar
 
 USB:
 
 ```bash
-adb install -r app/build/outputs/apk/debug/app-debug.apk
+adb install -r app/build/outputs/apk/debug/RemoteSend.apk
 adb shell am start -n com.remotesend.app/.MainActivity
 ```
 
@@ -185,6 +186,16 @@ docs/                análisis, API, arquitectura, guía, testing y Play Store
 - `docs/screenshots/09-packages-collapsed.png`
 - `docs/screenshots/10-delete-dialog.png`
 - `docs/screenshots/11-queue-remove-dialog.png`
+- `docs/screenshots/12-creator.png`
+
+## Autor
+
+**Dilson Zuleta Molina (DilsonZM)** — Ingeniero Electrónico y especialista en
+Visual Analytics & Big Data. Experto en Power Platform (Power BI, Power Apps,
+Power Automate), Python y SQL. Más de 6 años liderando soluciones de analítica,
+automatización y gestión de datos.
+
+- GitHub: https://github.com/DilsonZM
 
 ## Documentación
 
@@ -212,8 +223,11 @@ docs/                análisis, API, arquitectura, guía, testing y Play Store
 ## Créditos y aviso legal
 
 Inspirado en PS4 Remote PKG Sender V2 de Gkiokan y en el trabajo de flatz,
-Specter, xvortex y la comunidad homebrew. PlayStation, PS4 y PS5 son marcas de
-Sony Interactive Entertainment. Este proyecto no está afiliado a Sony.
+Specter, xvortex y la comunidad homebrew. La app homebrew que se instala en la
+PS4 es **PS4RPI** de **njzydark** (port OOSDK de flatZ RPI, puerto 12801 por
+defecto), fork de Backporter/ps4_remote_pkg_installer-OOSDK. PlayStation, PS4 y
+PS5 son marcas de Sony Interactive Entertainment. Este proyecto no está afiliado
+a Sony.
 
 Licencia MIT. Consulta [LICENSE](LICENSE). Créditos completos, incluido el
 modelo **DeepSeek v4.1 flash** usado para el análisis REA/ingeniería inversa y

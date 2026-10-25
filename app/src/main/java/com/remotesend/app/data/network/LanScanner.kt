@@ -43,7 +43,7 @@ class LanScanner(
         val total = hosts.size
         val scanned = AtomicInteger(0)
         val semaphore = Semaphore(48)
-        val rpiPorts = listOf(rpiPort, RPI_PORT).distinct()
+        val rpiPorts = listOf(rpiPort, RPI_PORT_PS4RPI, RPI_PORT).distinct()
         val tcpPorts = listOf(tcpPort, TCP_PORT).distinct()
         logger.info(
             "Escaneo",
@@ -120,6 +120,7 @@ class LanScanner(
 
     companion object {
         const val RPI_PORT = 12800
+        const val RPI_PORT_PS4RPI = 12801
         const val TCP_PORT = 9090
     }
 }

@@ -12,8 +12,9 @@ Versión: `2.10.4` (`package.json`)
   configuración/cola.
 - Modelo de IA: **DeepSeek v4.1 flash**, usado para la ingeniería inversa, el
   análisis de protocolos y la generación/asistencia del clon Android.
-- Validación con dispositivo real: RedMagic NX769J (Android 16) y PS4 con RPI en
-  el puerto 12801.
+- Validación con dispositivo real: RedMagic NX769J (Android 16) y PS4 con
+  PS4RPI de njzydark en el puerto 12801.
+- Autor y validación del proyecto: **Dilson Zuleta Molina (DilsonZM)**.
 - El clon no copia código del original: reimplementa el comportamiento en
   Kotlin/Compose y sustituye Express/Node por un servidor HTTP Android.
 
@@ -112,7 +113,11 @@ y opcionalmente se antepone la ruta completa.
 ## 4. API flatZ RPI (PS4)
 
 Cliente: `src/renderer/plugins/ps4.js`.  
-Base: `http://<IP_PS4>:12800`.  
+Base: `http://<IP_PS4>:12800` en el RPI original de flatZ. La app que se
+instala habitualmente en la consola es **PS4RPI de njzydark** (port OOSDK),
+cuyo puerto por defecto es **12801**:
+https://github.com/njzydark/PS4RPI
+
 Método: `POST` con cuerpo JSON (axios envía JSON aunque declare
 `application/x-www-form-urlencoded`).
 

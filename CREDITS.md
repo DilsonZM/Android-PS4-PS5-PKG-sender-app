@@ -1,5 +1,15 @@
 # Créditos
 
+## Autor y mantenimiento
+
+**Dilson Zuleta Molina (DilsonZM)** — Ingeniero Electrónico y especialista en
+Visual Analytics & Big Data. Experto en Power Platform (Power BI, Power Apps,
+Power Automate), Python y SQL. Más de 6 años liderando soluciones de analítica,
+automatización y gestión de datos.
+
+- GitHub: https://github.com/DilsonZM
+- Proyecto: RemoteSend Android
+
 ## Proyecto original
 
 - **PS4 Remote PKG Sender V2** — Gkiokan  
@@ -19,9 +29,18 @@ implementó una versión nativa para Android.
 - **opencode** — entorno de agente usado para ejecutar el análisis, editar el
   proyecto, compilar, probar en dispositivo real y documentar.
 
+## App homebrew instalada en la PS4
+
+- **njzydark / PS4RPI** — port OOSDK de flatZ RPI con puerto **12801** por
+  defecto. Es la app que se ejecuta en la consola para recibir las órdenes de
+  RemoteSend.  
+  https://github.com/njzydark/PS4RPI
+- **Backporter / ps4_remote_pkg_installer-OOSDK** — base del fork OOSDK.  
+  https://github.com/Backporter/ps4_remote_pkg_installer-OOSDK
+
 ## Comunidad homebrew
 
-- **flatz** — Remote Package Installer (RPI) para PS4.
+- **flatz** — Remote Package Installer (RPI) original para PS4 (puerto 12800).
 - **Specter**, **xvortex** y colaboradores de GoldHEN.
 - Comunidad de etaHEN/PS5.
 - Todos los testers y usuarios que reportaron comportamiento real de las APIs.

@@ -33,6 +33,8 @@ data class DetectionResult(
     val message: String,
     val latencyMs: Long? = null,
     val ambiguousTcp: Boolean = false,
+    val httpPort: Int? = null,
+    val tcpPort: Int? = null,
 )
 
 data class ConsoleHealth(

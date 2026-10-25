@@ -128,7 +128,28 @@ class InstallationManager(
             return
         }
 
-        val client = clientFactory.create(resolvedType, config)
+        val resolvedHttpPort = detection.httpPort ?: config.httpPort
+        val resolvedTcpPort = detection.tcpPort ?: config.tcpPort
+        val resolvedConfig = config.copy(
+            type = resolvedType,
+            httpPort = resolvedHttpPort,
+            tcpPort = resolvedTcpPort,
+        )
+        if (resolvedHttpPort != config.httpPort || resolvedTcpPort != config.tcpPort) {
+            stateStore.update { state ->
+                state.copy(
+                    console = state.console.copy(
+                        httpPort = resolvedHttpPort,
+                        tcpPort = resolvedTcpPort,
+                    ),
+                )
+            }
+            logger.info(
+                "Instalación",
+                "Puerto detectado y guardado: RPI=$resolvedHttpPort TCP=$resolvedTcpPort",
+            )
+        }
+        val client = clientFactory.create(resolvedType, resolvedConfig)
         queue.update(itemId) {
             it.copy(consoleType = resolvedType, serverUrl = pkgUrl)
         }
@@ -169,7 +190,7 @@ class InstallationManager(
                     0,
                     0,
                 )
-                pollTask(client, itemId, existingTask, pkg, config, resolvedType)
+                pollTask(client, itemId, existingTask, pkg, resolvedConfig, resolvedType)
                 return
             }
             logger.warn("Instalación", "No se pudo reanudar la tarea $existingTask; se reinstalará")
@@ -207,7 +228,7 @@ class InstallationManager(
                         itemId = itemId,
                         taskId = result.taskId,
                         pkg = pkg,
-                        config = config,
+                        config = resolvedConfig,
                         type = resolvedType,
                     )
 

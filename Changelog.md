@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.1 — 2026-10-25
+
+- Crédito explícito a **njzydark/PS4RPI**, port OOSDK de flatZ RPI que se
+  instala en la PS4 y usa el puerto **12801** por defecto.
+- La detección automática y el escaneo prueban 12800 (flatZ) y 12801 (PS4RPI).
+- La instalación persiste el puerto detectado para pausa/reanudación/stop.
+- El APK de build y Release se llama **RemoteSend.apk**.
+- Banner CUSA con etiquetas compactas Juego/Act./DLC y `FlowRow`.
+- Sección **Creador** en Ajustes y créditos del autor Dilson Zuleta Molina
+  (DilsonZM).
+- Créditos a DeepSeek v4.1 flash.
+
 ## 1.0.0 — 2026-10-24
 
 ### Añadido
