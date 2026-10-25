@@ -35,6 +35,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.remotesend.app.ui.screens.console.ConsoleScreen
 import com.remotesend.app.ui.screens.home.HomeScreen
+import com.remotesend.app.ui.screens.installed.InstalledScreen
 import com.remotesend.app.ui.screens.logs.LogsScreen
 import com.remotesend.app.ui.screens.packages.PackagesScreen
 import com.remotesend.app.ui.screens.queue.QueueScreen
@@ -53,6 +54,7 @@ private enum class Destination(
 }
 
 private const val LOGS_ROUTE = "logs"
+private const val INSTALLED_ROUTE = "installed"
 
 @Composable
 fun RemoteSendRoot() {
@@ -132,7 +134,9 @@ fun RemoteSendRoot() {
                     )
                 }
                 composable(Destination.PACKAGES.route) {
-                    PackagesScreen()
+                    PackagesScreen(
+                        onOpenInstalled = { navController.navigate(INSTALLED_ROUTE) },
+                    )
                 }
                 composable(Destination.QUEUE.route) {
                     QueueScreen(
@@ -150,6 +154,9 @@ fun RemoteSendRoot() {
                 }
                 composable(LOGS_ROUTE) {
                     LogsScreen(onBack = { navController.popBackStack() })
+                }
+                composable(INSTALLED_ROUTE) {
+                    InstalledScreen(onBack = { navController.popBackStack() })
                 }
             }
         }

@@ -4,6 +4,7 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
@@ -33,11 +34,13 @@ import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.PlaylistAdd
 import androidx.compose.material.icons.outlined.Refresh
 import androidx.compose.material.icons.outlined.Search
+import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -84,7 +87,7 @@ import com.remotesend.app.ui.components.StatusPill
 import kotlinx.coroutines.launch
 
 @Composable
-fun PackagesScreen() {
+fun PackagesScreen(onOpenInstalled: () -> Unit) {
     val viewModel: PackagesViewModel = appViewModel()
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     CollectUiMessages(viewModel.events)
@@ -106,6 +109,7 @@ fun PackagesScreen() {
     var selectedPackage by remember { mutableStateOf<PkgFile?>(null) }
     var deleteCandidate by remember { mutableStateOf<PkgFile?>(null) }
 
+    Box(modifier = Modifier.fillMaxSize()) {
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
             title = "Paquetes",
@@ -325,7 +329,7 @@ fun PackagesScreen() {
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 24.dp),
+            contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 4.dp, bottom = 104.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             if (state.groupByTitleId && state.groups.isNotEmpty()) {
@@ -350,6 +354,15 @@ fun PackagesScreen() {
                 }
             }
         }
+    }
+        ExtendedFloatingActionButton(
+            onClick = onOpenInstalled,
+            icon = { Icon(Icons.Outlined.Storage, contentDescription = null) },
+            text = { Text("Instalados") },
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(20.dp),
+        )
     }
 
     val details = selectedPackage

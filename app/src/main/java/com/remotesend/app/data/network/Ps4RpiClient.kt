@@ -5,6 +5,7 @@ import com.remotesend.app.domain.model.ConsoleConfig
 import com.remotesend.app.domain.model.ConsoleHealth
 import com.remotesend.app.domain.model.ConsoleInstallResult
 import com.remotesend.app.domain.model.ConsoleType
+import com.remotesend.app.domain.model.InstalledTitleStatus
 import com.remotesend.app.domain.model.PkgFile
 import com.remotesend.app.domain.model.TaskProgress
 import kotlinx.coroutines.Dispatchers
@@ -147,6 +148,30 @@ class Ps4RpiClient(
         )
     }
 
+    override suspend fun isInstalled(titleId: String): InstalledTitleStatus? =
+        withContext(Dispatchers.IO) {
+            val response = post("/api/is_exists", buildJsonObject { put("title_id", titleId) })
+            val json = response.json ?: return@withContext null
+            val exists = json.booleanValue("exists")
+                ?: (json.stringValue("exists") == "true")
+            InstalledTitleStatus(
+                exists = exists,
+                sizeBytes = json.longValue("size"),
+            )
+        }
+
+    override suspend fun uninstallGame(titleId: String): Boolean =
+        uninstallCommand("/api/uninstall_game", "title_id", titleId)
+
+    override suspend fun uninstallPatch(titleId: String): Boolean =
+        uninstallCommand("/api/uninstall_patch", "title_id", titleId)
+
+    override suspend fun uninstallAc(contentId: String): Boolean =
+        uninstallCommand("/api/uninstall_ac", "content_id", contentId)
+
+    override suspend fun uninstallTheme(contentId: String): Boolean =
+        uninstallCommand("/api/uninstall_theme", "content_id", contentId)
+
     override suspend fun pause(taskId: Long): Boolean = simpleCommand("/api/pause_task", taskId)
 
     override suspend fun stop(taskId: Long): Boolean = simpleCommand("/api/stop_task", taskId)
@@ -161,6 +186,16 @@ class Ps4RpiClient(
             val response = post(path, buildJsonObject { put("task_id", taskId) })
             response.json?.stringValue("status") == "success"
         }
+
+    private suspend fun uninstallCommand(
+        path: String,
+        key: String,
+        value: String,
+    ): Boolean = withContext(Dispatchers.IO) {
+        val response = post(path, buildJsonObject { put(key, value) })
+        val json = response.json
+        json?.stringValue("status") == "success" || json?.booleanValue("success") == true
+    }
 
     private fun post(
         path: String,

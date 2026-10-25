@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.0.4 — 2026-10-25
+
+- Nueva pantalla **Juegos instalados (Fase 1)**, accesible desde el botón flotante **Instalados** en Paquetes.
+- Lista real de instalados leída de `app.db` por FTP de GoldHEN (puerto 2121).
+- Portadas de `/user/appmeta`, CUSA, tamaño real y dona de distribución.
+- Fallback secuencial a `is_exists` de PS4RPI si el FTP no está disponible.
+- Desinstalación de juego/actualización/DLC con confirmación Material 3.
+- `is_exists` secuencial: PS4RPI se cierra con CE-34878-0 si recibe varias consultas a la vez.
+- Aviso claro: PS4RPI no reporta espacio libre total ni confirma updates/DLC.
+- 58 pruebas unitarias/de integración.
+- Version 1.0.4 (versionCode 5).
+
 ## 1.0.3 — 2026-10-25
 
 - Firma estable de Releases con keystore en GitHub Actions.

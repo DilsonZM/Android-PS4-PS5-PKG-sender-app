@@ -7,6 +7,8 @@ import com.remotesend.app.domain.model.ConsoleType
 class ConsoleClientFactory(
     private val logger: AppLogger,
 ) {
+    fun createRpi(config: ConsoleConfig): Ps4RpiClient = Ps4RpiClient(config, logger)
+
     fun create(type: ConsoleType, config: ConsoleConfig): ConsoleClient {
         return when (type) {
             ConsoleType.PS4_RPI -> Ps4RpiClient(config, logger)

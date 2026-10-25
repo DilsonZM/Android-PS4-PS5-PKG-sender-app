@@ -167,6 +167,14 @@ start(itemId)
 - Cola: carátula, categoría, versión, CUSA, progreso, velocidad, ETA, tarea y
   controles.
 - Registros: filtros por nivel, búsqueda, expansión y exportación.
+- Juegos instalados (Fase 1): `InstalledRepository` descarga
+  `/system_data/priv/mms/app.db` por FTP de GoldHEN (2121), lee las tablas
+  `tbl_appbrowse_*` (`category='gd'`), descarga iconos de
+  `/user/appmeta/<TITLEID>/icon0.png` y los cachea. La biblioteca local enriquece
+  actualizaciones/DLC. PS4RPI se usa solo para `uninstall_game`,
+  `uninstall_patch` y `uninstall_ac`. Si FTP falla, hay fallback secuencial a
+  `is_exists`. `is_exists` concurrente corrompe el `pool` estático de PS4RPI y
+  provoca `CE-34878-0`; nunca se paraleliza. No hay espacio libre total.
 
 ## 8. Permisos
 

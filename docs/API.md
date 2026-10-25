@@ -144,6 +144,21 @@ speed = (done_actual - done_anterior) / (t_actual - t_anterior)
 La UI muestra porcentaje, `done / total`, velocidad en MB/s y ETA. Si no hay
 `rest_sec`, la ETA se calcula con `(total - done) / speed`.
 
+### Fase 1: juegos instalados
+
+La lista real de instalados se lee de `/system_data/priv/mms/app.db` por el FTP
+de GoldHEN (2121, anónimo); PS4RPI no expone un listado global. La app muestra
+tamaños de `app.db`, iconos de `/user/appmeta/<TITLEID>/icon0.png` y usa
+`is_exists` solo como fallback secuencial. Para desinstalar envía:
+
+- `/api/uninstall_game` con `title_id`
+- `/api/uninstall_patch` con `title_id`
+- `/api/uninstall_ac` con `content_id`
+
+Limitaciones: RPI no expone espacio libre total ni confirma actualizaciones/DLC.
+`is_exists` no es seguro en paralelo (buffer estático); la app lo llama de uno en
+uno. El FTP de GoldHEN debe estar activo en el puerto 2121.
+
 ### Errores
 
 Los códigos también pueden llegar en hexadecimal:

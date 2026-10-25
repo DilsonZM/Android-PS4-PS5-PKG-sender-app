@@ -11,6 +11,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.remotesend.app.di.AppContainer
 import com.remotesend.app.ui.screens.console.ConsoleViewModel
 import com.remotesend.app.ui.screens.home.HomeViewModel
+import com.remotesend.app.ui.screens.installed.InstalledViewModel
 import com.remotesend.app.ui.screens.logs.LogsViewModel
 import com.remotesend.app.ui.screens.packages.PackagesViewModel
 import com.remotesend.app.ui.screens.queue.QueueViewModel
@@ -36,6 +37,8 @@ class AppViewModelFactory(
             modelClass.isAssignableFrom(ConsoleViewModel::class.java) -> ConsoleViewModel(container)
             modelClass.isAssignableFrom(SettingsViewModel::class.java) -> SettingsViewModel(container)
             modelClass.isAssignableFrom(LogsViewModel::class.java) -> LogsViewModel(container)
+            modelClass.isAssignableFrom(InstalledViewModel::class.java) ->
+                InstalledViewModel(container)
             else -> error("ViewModel no soportado: ${modelClass.name}")
         }
         @Suppress("UNCHECKED_CAST")

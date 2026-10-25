@@ -14,6 +14,7 @@ import com.remotesend.app.data.network.ConsoleDetector
 import com.remotesend.app.data.network.LanScanner
 import com.remotesend.app.data.persist.StateStore
 import com.remotesend.app.data.pkg.PkgMetadataReader
+import com.remotesend.app.data.repository.InstalledRepository
 import com.remotesend.app.data.repository.PackageImporter
 import com.remotesend.app.data.repository.PackageRepository
 import com.remotesend.app.data.repository.QueueRepository
@@ -77,6 +78,14 @@ class AppContainer(
         notifier = notifications,
         logger = logger,
         scope = applicationScope,
+    )
+
+    val installedRepository = InstalledRepository(
+        context = appContext,
+        stateStore = stateStore,
+        detector = consoleDetector,
+        clientFactory = clientFactory,
+        logger = logger,
     )
 
     val backupManager = BackupManager(application, stateStore, logger)

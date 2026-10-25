@@ -3,6 +3,7 @@ package com.remotesend.app.data.network
 import com.remotesend.app.domain.model.ConsoleHealth
 import com.remotesend.app.domain.model.ConsoleInstallResult
 import com.remotesend.app.domain.model.ConsoleType
+import com.remotesend.app.domain.model.InstalledTitleStatus
 import com.remotesend.app.domain.model.PkgFile
 import com.remotesend.app.domain.model.TaskProgress
 
@@ -26,4 +27,14 @@ interface ConsoleClient {
     suspend fun resume(taskId: Long): Boolean
 
     suspend fun unregister(taskId: Long): Boolean
+
+    suspend fun isInstalled(titleId: String): InstalledTitleStatus? = null
+
+    suspend fun uninstallGame(titleId: String): Boolean = false
+
+    suspend fun uninstallPatch(titleId: String): Boolean = false
+
+    suspend fun uninstallAc(contentId: String): Boolean = false
+
+    suspend fun uninstallTheme(contentId: String): Boolean = false
 }

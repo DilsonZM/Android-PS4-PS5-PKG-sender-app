@@ -48,6 +48,11 @@ el puerto 12801**:
 - Carátula del juego visible en la cola y en la tarjeta de instalación activa.
 - Eliminación desde la biblioteca con confirmación Material 3 y borrado real del
   archivo del almacenamiento.
+- **Juegos instalados (Fase 1):** desde el botón flotante **Instalados** de
+  Paquetes, lee `app.db` por el FTP de GoldHEN (puerto 2121) y muestra la lista
+  real de juegos instalados con portadas, tamaño y dona de distribución.
+  PS4RPI se usa solo para desinstalar. La primera carga descarga y cachea los
+  iconos. No muestra espacio libre total porque PS4RPI no lo expone.
 - Buscador tipo píldora, iconos de agrupación y acciones compactas.
 - Servidor HTTP embebido con heartbeat, listado JSON, `HEAD` y `Range`.
 - Cola persistente con reordenación, instalación, pausa, reanudación, parada y

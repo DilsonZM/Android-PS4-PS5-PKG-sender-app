@@ -139,7 +139,24 @@ Qué probar:
 No se puede superar el límite del enlace/consola desde la app. El servidor
 soporta más de 20 MB/s.
 
-## 9. Apoyar el proyecto
+## 9. Juegos instalados (Fase 1)
+
+Desde **Paquetes → botón flotante Instalados** puedes ver los títulos de tu biblioteca que
+PS4RPI reporta como instalados en la consola.
+
+- Muestra portada, título, CUSA, tamaño reportado y una dona de distribución.
+- El menú de cada juego permite **desinstalar juego**, **actualización** o
+  **DLC**; siempre pide confirmación y el PKG sigue guardado en el teléfono.
+- Solo funciona con **PS4 + PS4RPI/flatZ RPI**. GoldHEN/etaHEN no exponen la
+  lista ni el tamaño.
+- PS4RPI no reporta el **espacio libre total** ni confirma si una actualización o
+  DLC está instalada; solo confirma el juego base. Esas funciones quedan para la
+  Fase 2 con FTP/agente.
+- La app consulta los títulos **uno por uno**: PS4RPI usa un buffer estático en
+  `is_exists` y se cierra con `CE-34878-0` si recibe consultas simultáneas. Si la
+  RPI se cerró, vuelve a abrirla en la PS4 y pulsa **Volver a comprobar**.
+
+## 10. Apoyar el proyecto
 
 El icono de taza de la barra superior de Inicio y el botón de **Ajustes →
 Creador** abren PayPal:
@@ -149,7 +166,7 @@ https://paypal.me/dilsonzuleta
 Es una donación voluntaria; no desbloquea funciones ni cambia el comportamiento
 de la app.
 
-## 10. Solución de problemas
+## 11. Solución de problemas
 
 | Síntoma | Causa / solución |
 |---|---|
@@ -163,7 +180,7 @@ de la app.
 | Sin espacio | Código `2157510789`; libera espacio en la consola |
 | Pantalla apagada corta la descarga | Mantén la notificación del servicio y desactiva optimizaciones del fabricante |
 
-## 11. Capturas
+## 12. Capturas
 
 - Inicio: `screenshots/01-home.png`
 - Consola conectada: `screenshots/03-console-connected.png`

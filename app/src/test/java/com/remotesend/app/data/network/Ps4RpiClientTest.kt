@@ -144,6 +144,48 @@ class Ps4RpiClientTest {
     }
 
     @Test
+    fun `is installed parses exists and hexadecimal size`() = runBlocking {
+        server.enqueue(
+            json("""{"status":"success","exists":"true","size":"0x7A000"}"""),
+        )
+
+        val status = client.isInstalled("CUSA29952")
+
+        assertTrue(status?.exists == true)
+        assertEquals(499712L, status?.sizeBytes)
+        val request = server.takeRequest()
+        assertEquals("/api/is_exists", request.path)
+        assertTrue(request.body.readUtf8().contains("\"title_id\":\"CUSA29952\""))
+    }
+
+    @Test
+    fun `uninstall game posts title id`() = runBlocking {
+        server.enqueue(json("""{"status":"success"}"""))
+
+        assertTrue(client.uninstallGame("CUSA29952"))
+
+        val request = server.takeRequest()
+        assertEquals("/api/uninstall_game", request.path)
+        assertTrue(request.body.readUtf8().contains("\"title_id\":\"CUSA29952\""))
+    }
+
+    @Test
+    fun `uninstall update and dlc use their endpoints`() = runBlocking {
+        server.enqueue(json("""{"status":"success"}"""))
+        assertTrue(client.uninstallPatch("CUSA29952"))
+        assertEquals("/api/uninstall_patch", server.takeRequest().path)
+
+        server.enqueue(json("""{"status":"success"}"""))
+        assertTrue(client.uninstallAc("UP3456-CUSA29952_00-1412781209801863"))
+        val dlcRequest = server.takeRequest()
+        assertEquals("/api/uninstall_ac", dlcRequest.path)
+        assertTrue(
+            dlcRequest.body.readUtf8()
+                .contains("\"content_id\":\"UP3456-CUSA29952_00-1412781209801863\""),
+        )
+    }
+
+    @Test
     fun `check connection succeeds with valid RPI response`() = runBlocking {
         server.enqueue(json("""{"status":"success","exists":false}"""))
         assertTrue(client.checkConnection().reachable)
