@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.3 — 2026-10-25
+
+- Firma estable de Releases con keystore en GitHub Actions.
+- El APK firmado estable permite actualizar sin desinstalar a partir de esta
+  versión.
+- Instrucciones de secretos en `docs/SIGNING.md`.
+- Version 1.0.3 (versionCode 4).
+
 ## 1.0.2 — 2026-10-25
 
 - Icono de café en la barra superior de Inicio y botón de apoyo en

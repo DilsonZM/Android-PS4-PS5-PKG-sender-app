@@ -189,6 +189,14 @@ docs/                análisis, API, arquitectura, guía, testing y Play Store
 - `docs/screenshots/12-creator.png`
 - `docs/screenshots/13-home-coffee.png`
 
+## Firma de releases
+
+A partir de **v1.0.3** los Releases se firman con una keystore estable en GitHub
+Actions, de modo que las actualizaciones se instalan encima sin desinstalar.
+La keystore no se guarda en el repositorio: se configura con los secretos
+`ANDROID_KEYSTORE_BASE64`, `ANDROID_KEYSTORE_PASSWORD`, `ANDROID_KEY_ALIAS` y
+`ANDROID_KEY_PASSWORD`. Instrucciones: [docs/SIGNING.md](docs/SIGNING.md).
+
 ## Apoyar el proyecto
 
 Si RemoteSend te resulta útil, puedes invitar un café por PayPal desde el icono

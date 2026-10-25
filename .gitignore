@@ -13,3 +13,8 @@ captures/
 !debug.keystore
 
 .kotlin/
+*.jks
+*.p12
+*.b64
+keystore.properties
+signing/
