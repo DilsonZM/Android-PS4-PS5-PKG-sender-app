@@ -187,6 +187,7 @@ docs/                análisis, API, arquitectura, guía, testing y Play Store
 - `docs/screenshots/10-delete-dialog.png`
 - `docs/screenshots/11-queue-remove-dialog.png`
 - `docs/screenshots/12-creator.png`
+- `docs/screenshots/13-home-coffee.png`
 
 ## Apoyar el proyecto
 

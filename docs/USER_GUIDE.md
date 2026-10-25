@@ -172,3 +172,4 @@ de la app.
 - Inicio durante instalación: `screenshots/06-home-progress.png`
 - Resultado del escaneo: `screenshots/07-scan-result.png`
 - Creador: `screenshots/12-creator.png`
+- Inicio con café/PayPal: `screenshots/13-home-coffee.png`
