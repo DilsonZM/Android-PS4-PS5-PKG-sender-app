@@ -295,8 +295,11 @@ fun StatusPill(status: QueueStatus) {
 }
 
 @Composable
-fun PackageKindPill(category: String?) {
-    val label = categoryLabel(category) ?: "Paquete"
+fun PackageKindPill(
+    category: String?,
+    labelOverride: String? = null,
+) {
+    val label = labelOverride ?: categoryLabel(category) ?: "Paquete"
     val colors = when {
         PkgNaming.isBaseCategory(category) ->
             MaterialTheme.colorScheme.primaryContainer to

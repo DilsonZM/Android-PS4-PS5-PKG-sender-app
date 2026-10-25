@@ -5,6 +5,8 @@ import android.content.ClipboardManager
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -490,6 +492,41 @@ private fun PackageRow(
     }
 }
 
+private data class GroupKindUi(
+    val category: String?,
+    val label: String,
+)
+
+private fun groupKinds(group: PackageGroup): List<GroupKindUi> {
+    val categories = group.packages
+        .map { PkgNaming.effectiveCategory(it.category, it.displayName) }
+        .distinct()
+    val hasBase = categories.any { PkgNaming.isBaseCategory(it) }
+    val hasUpdate = categories.any { PkgNaming.isUpdateCategory(it) }
+    val hasDlc = categories.any { PkgNaming.isDlcCategory(it) }
+    val hasUnknown = categories.any {
+        it == null || (!PkgNaming.isBaseCategory(it) &&
+            !PkgNaming.isUpdateCategory(it) &&
+            !PkgNaming.isDlcCategory(it))
+    }
+    val compact = hasBase && hasUpdate && hasDlc
+    return buildList {
+        if (hasBase) {
+            add(GroupKindUi("gd", if (compact) "Juego" else "Juego base"))
+        }
+        if (hasUpdate) {
+            add(GroupKindUi("gp", if (compact) "Act." else "Actualización"))
+        }
+        if (hasDlc) {
+            add(GroupKindUi("ac", "DLC"))
+        }
+        if (hasUnknown) {
+            add(GroupKindUi(null, "Paquete"))
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun PackageGroupHeader(
     group: PackageGroup,
@@ -531,13 +568,14 @@ private fun PackageGroupHeader(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    group.packages
-                        .map {
-                            PkgNaming.effectiveCategory(it.category, it.displayName)
-                        }
-                        .distinct()
-                        .forEach { category -> PackageKindPill(category) }
+                FlowRow(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(4.dp),
+                    verticalArrangement = Arrangement.spacedBy(4.dp),
+                ) {
+                    groupKinds(group).forEach { kind ->
+                        PackageKindPill(kind.category, kind.label)
+                    }
                 }
             }
             IconButton(

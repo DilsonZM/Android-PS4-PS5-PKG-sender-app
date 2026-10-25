@@ -53,6 +53,8 @@
 - Contraer/expandir global como icono en la fila de carpeta.
 - Añadir lote como icono dentro del banner CUSA.
 - Inferencia de “FULLGAME/Game” como juego base cuando el SFO no trae categoría.
+- Banner CUSA con etiquetas compactas Juego/Act./DLC y `FlowRow` para evitar que
+  el DLC se corte.
 - Confirmación Material 3 para eliminar de cola o biblioteca.
 - Créditos a DeepSeek v4.1 flash por el análisis REA, ingeniería inversa y
   generación del clon Android.

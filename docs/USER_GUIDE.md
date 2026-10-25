@@ -70,6 +70,9 @@ CUSA29952 · 2 paquete(s) · 2,77 GB
 - **Juego base**: paquete principal.
 - **Actualización**: parche.
 - **DLC**: contenido adicional.
+- Si el grupo tiene los tres tipos, el banner usa etiquetas compactas
+  **Juego / Act. / DLC** para que el DLC siempre sea visible; si solo hay base
+  se muestra **Juego base**, y si hay base + actualización se muestran ambas.
 - El icono de capas de la barra superior activa/desactiva la agrupación.
 - El icono de lote dentro del banner CUSA encola base, actualizaciones y DLC en
   orden.
