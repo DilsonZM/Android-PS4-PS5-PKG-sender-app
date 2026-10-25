@@ -1,6 +1,9 @@
 package com.remotesend.app.ui
 
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.MaterialTheme
@@ -22,17 +25,18 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.luminance
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.remotesend.app.domain.model.ConsoleConnectionStatus
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import kotlinx.coroutines.launch
 import com.remotesend.app.ui.screens.console.ConsoleScreen
 import com.remotesend.app.ui.screens.home.HomeScreen
 import com.remotesend.app.ui.screens.installed.InstalledScreen
@@ -53,6 +57,7 @@ private enum class Destination(
     SETTINGS("settings", "Ajustes", Icons.Outlined.Settings),
 }
 
+private const val MAIN_ROUTE = "main"
 private const val LOGS_ROUTE = "logs"
 private const val INSTALLED_ROUTE = "installed"
 
@@ -62,6 +67,8 @@ fun RemoteSendRoot() {
     val snackbarHostState = remember { SnackbarHostState() }
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
+    val pagerState = rememberPagerState(pageCount = { Destination.entries.size })
+    val scope = rememberCoroutineScope()
     val container = LocalAppContainer.current
     val consoleConnection by container.consoleDetector.connection.collectAsStateWithLifecycle()
     val dark = MaterialTheme.colorScheme.background.luminance() < 0.5f
@@ -70,18 +77,15 @@ fun RemoteSendRoot() {
     Scaffold(
         bottomBar = {
             NavigationBar {
-                Destination.entries.forEach { destination ->
+                Destination.entries.forEachIndexed { index, destination ->
                     NavigationBarItem(
-                        selected = currentRoute == destination.route,
+                        selected = pagerState.currentPage == index,
                         onClick = {
-                            if (currentRoute != destination.route) {
-                                navController.navigate(destination.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
+                            if (currentRoute != MAIN_ROUTE) {
+                                navController.popBackStack(MAIN_ROUTE, false)
+                            }
+                            scope.launch {
+                                pagerState.animateScrollToPage(index)
                             }
                         },
                         icon = {
@@ -122,35 +126,54 @@ fun RemoteSendRoot() {
         CompositionLocalProvider(LocalSnackbarHostState provides snackbarHostState) {
             NavHost(
                 navController = navController,
-                startDestination = Destination.HOME.route,
+                startDestination = MAIN_ROUTE,
                 modifier = Modifier.padding(innerPadding),
             ) {
-                composable(Destination.HOME.route) {
-                    HomeScreen(
-                        onOpenPackages = { navigateTab(navController, Destination.PACKAGES.route) },
-                        onOpenQueue = { navigateTab(navController, Destination.QUEUE.route) },
-                        onOpenConsole = { navigateTab(navController, Destination.CONSOLE.route) },
-                        onOpenLogs = { navController.navigate(LOGS_ROUTE) },
-                    )
-                }
-                composable(Destination.PACKAGES.route) {
-                    PackagesScreen(
-                        onOpenInstalled = { navController.navigate(INSTALLED_ROUTE) },
-                    )
-                }
-                composable(Destination.QUEUE.route) {
-                    QueueScreen(
-                        onOpenPackages = { navigateTab(navController, Destination.PACKAGES.route) },
-                        onOpenConsole = { navigateTab(navController, Destination.CONSOLE.route) },
-                    )
-                }
-                composable(Destination.CONSOLE.route) {
-                    ConsoleScreen()
-                }
-                composable(Destination.SETTINGS.route) {
-                    SettingsScreen(
-                        onOpenLogs = { navController.navigate(LOGS_ROUTE) },
-                    )
+                composable(MAIN_ROUTE) {
+                    HorizontalPager(
+                        state = pagerState,
+                        modifier = Modifier.fillMaxSize(),
+                    ) { page ->
+                        when (Destination.entries[page]) {
+                            Destination.HOME -> HomeScreen(
+                                onOpenPackages = {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(Destination.PACKAGES.ordinal)
+                                    }
+                                },
+                                onOpenQueue = {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(Destination.QUEUE.ordinal)
+                                    }
+                                },
+                                onOpenConsole = {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(Destination.CONSOLE.ordinal)
+                                    }
+                                },
+                                onOpenLogs = { navController.navigate(LOGS_ROUTE) },
+                            )
+                            Destination.PACKAGES -> PackagesScreen(
+                                onOpenInstalled = { navController.navigate(INSTALLED_ROUTE) },
+                            )
+                            Destination.QUEUE -> QueueScreen(
+                                onOpenPackages = {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(Destination.PACKAGES.ordinal)
+                                    }
+                                },
+                                onOpenConsole = {
+                                    scope.launch {
+                                        pagerState.animateScrollToPage(Destination.CONSOLE.ordinal)
+                                    }
+                                },
+                            )
+                            Destination.CONSOLE -> ConsoleScreen()
+                            Destination.SETTINGS -> SettingsScreen(
+                                onOpenLogs = { navController.navigate(LOGS_ROUTE) },
+                            )
+                        }
+                    }
                 }
                 composable(LOGS_ROUTE) {
                     LogsScreen(onBack = { navController.popBackStack() })
@@ -160,18 +183,5 @@ fun RemoteSendRoot() {
                 }
             }
         }
-    }
-}
-
-private fun navigateTab(
-    navController: androidx.navigation.NavHostController,
-    route: String,
-) {
-    navController.navigate(route) {
-        popUpTo(navController.graph.findStartDestination().id) {
-            saveState = true
-        }
-        launchSingleTop = true
-        restoreState = true
     }
 }

@@ -139,22 +139,28 @@ Qué probar:
 No se puede superar el límite del enlace/consola desde la app. El servidor
 soporta más de 20 MB/s.
 
-## 9. Juegos instalados (Fase 1)
+## 9. Juegos instalados
 
-Desde **Paquetes → botón flotante Instalados** puedes ver los títulos de tu biblioteca que
-PS4RPI reporta como instalados en la consola.
+Desde **Paquetes → botón flotante Instalados** puedes ver la lista real de juegos
+instalados en la PS4.
 
-- Muestra portada, título, CUSA, tamaño reportado y una dona de distribución.
+- La lista se lee de `/system_data/priv/mms/app.db` por el **FTP de GoldHEN**
+  (puerto 2121, acceso anónimo) e incluye portadas, título, CUSA y tamaño.
+- Arriba hay un buscador compacto por nombre o Title ID. La dona muestra la
+  distribución y los juegos más pesados; abajo, la lista está ordenada A-Z con
+  separadores por letra.
 - El menú de cada juego permite **desinstalar juego**, **actualización** o
   **DLC**; siempre pide confirmación y el PKG sigue guardado en el teléfono.
-- Solo funciona con **PS4 + PS4RPI/flatZ RPI**. GoldHEN/etaHEN no exponen la
-  lista ni el tamaño.
-- PS4RPI no reporta el **espacio libre total** ni confirma si una actualización o
-  DLC está instalada; solo confirma el juego base. Esas funciones quedan para la
-  Fase 2 con FTP/agente.
-- La app consulta los títulos **uno por uno**: PS4RPI usa un buffer estático en
-  `is_exists` y se cierra con `CE-34878-0` si recibe consultas simultáneas. Si la
-  RPI se cerró, vuelve a abrirla en la PS4 y pulsa **Volver a comprobar**.
+  Las actualizaciones/DLC solo aparecen si están en la biblioteca.
+- **PS4RPI/flatZ RPI** se usa para desinstalar. La lista por FTP funciona aunque
+  RPI esté cerrado, pero la desinstalación fallará.
+- Si el FTP no está disponible, la app cae al modo anterior: consulta uno por uno
+  los Title IDs de la biblioteca con `is_exists` de PS4RPI.
+- No hay selector de capacidad ni espacio libre automático: PS4RPI no expone el
+  total del disco. La app solo muestra el tamaño del contenido de `app.db`.
+- La app consulta `is_exists` **uno por uno** porque PS4RPI usa un buffer estático
+  y se cierra con `CE-34878-0` si recibe consultas simultáneas. Si la RPI se cerró,
+  vuelve a abrirla en la PS4 y pulsa **Volver a comprobar**.
 
 ## 10. Apoyar el proyecto
 

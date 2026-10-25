@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.0.9 — 2026-10-25
+
+- Buscador compacto y minimalista en Juegos instalados.
+- Version 1.0.9 (versionCode 10).
+
+## 1.0.8 — 2026-10-25
+
+- Instalados vuelve a la vista limpia de distribución y juegos.
+- Buscador compacto por nombre o Title ID.
+- Lista A-Z con separadores por letra y juegos más pesados en la torta.
+- Se eliminó la tarjeta/selector de capacidad y la pestaña Sistema.
+- Version 1.0.8 (versionCode 9).
+
+## 1.0.7 — 2026-10-25
+
+- Vista de almacenamiento compacta con torta de uso, GB libres y contenido.
+- Selector de disco PS4/PS5: 512 GB, 825 GB, 1 TB y 2 TB.
+- Nota corta: app.db no incluye updates/DLC, partidas ni capturas.
+- Version 1.0.7 (versionCode 8).
+
+## 1.0.6 — 2026-10-25
+
+- Selector manual de capacidad PS4 (500 GB, 1 TB, 2 TB, 4 TB) con estimación de libre.
+- Se quitó el mensaje de Fase 1 de la pantalla Instalados.
+- Se abandona la consulta automática de espacio por RPI; se usa la estimación manual.
+- Version 1.0.6 (versionCode 7).
+
+## 1.0.5 — 2026-10-25
+
+- Scroll horizontal entre Inicio, Paquetes, Cola, Consola y Ajustes, sincronizado con la barra inferior.
+- Pestaña **Apps** en Instalados para apps del sistema en solo lectura.
+- Envío de archivos por FTP de GoldHEN a `/user/data/RemoteSend` sin instalarlos.
+- Tarjeta de almacenamiento PS4 con total/libre cuando RPI expone `/api/disk`.
+- Version 1.0.5 (versionCode 6).
+
 ## 1.0.4 — 2026-10-25
 
 - Nueva pantalla **Juegos instalados (Fase 1)**, accesible desde el botón flotante **Instalados** en Paquetes.

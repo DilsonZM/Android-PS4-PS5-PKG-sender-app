@@ -54,7 +54,8 @@ class InstalledRepository(
             return@withContext InstalledScanResult(unsupportedReason = reason)
         }
 
-        val fallback = scanLibraryWithRpi(clientResult.getOrThrow(), libraryByTitle)
+        val client = clientResult.getOrThrow()
+        val fallback = scanLibraryWithRpi(client, libraryByTitle)
         val warning = buildString {
             append("No se pudo leer app.db por FTP de GoldHEN (2121). ")
             append("Mostrando solo títulos de la biblioteca confirmados por PS4RPI.")
@@ -148,6 +149,7 @@ class InstalledRepository(
                         ?: base?.sizeBytes
                         ?: 0L,
                     packages = sorted.orEmpty(),
+                    isSystem = app.isSystem,
                 )
             }.sortedBy { it.title.lowercase() }
         } finally {
@@ -180,14 +182,16 @@ class InstalledRepository(
 
             for (table in tables) {
                 db.rawQuery(
-                    "SELECT titleId, titleName, contentId, contentSize, metaDataPath " +
-                        "FROM `$table` WHERE category='gd' AND visible=1 " +
-                        "AND contentStatus=0",
+                    "SELECT titleId, titleName, contentId, contentSize, metaDataPath, " +
+                        "category FROM `$table` WHERE category IN ('gd','gdi','gda','gde') " +
+                        "AND visible=1 AND contentStatus=0",
                     null,
                 ).use { cursor ->
                     while (cursor.moveToNext()) {
                         val titleId = cursor.getString(0)?.trim().orEmpty()
-                        if (!TITLE_ID_PATTERN.matches(titleId)) continue
+                        val category = cursor.getString(5)?.trim().orEmpty()
+                        val isSystem = category != "gd"
+                        if (!isSystem && !TITLE_ID_PATTERN.matches(titleId)) continue
                         val name = cursor.getString(1)?.trim().orEmpty()
                         if (name.isEmpty()) continue
                         val size = if (cursor.isNull(3)) 0L else cursor.getLong(3)
@@ -197,10 +201,13 @@ class InstalledRepository(
                             sizeBytes = size,
                             metaDataPath = cursor.getString(4),
                             contentId = cursor.getString(2),
+                            isSystem = isSystem,
                         )
                         val existing = result[titleId]
                         if (existing == null ||
-                            (existing.sizeBytes == 0L && app.sizeBytes > 0L)
+                            (existing.isSystem && !app.isSystem) ||
+                            (existing.isSystem == app.isSystem &&
+                                existing.sizeBytes == 0L && app.sizeBytes > 0L)
                         ) {
                             result[titleId] = app
                         }
@@ -347,6 +354,7 @@ class InstalledRepository(
         val sizeBytes: Long,
         val metaDataPath: String?,
         val contentId: String?,
+        val isSystem: Boolean,
     )
 
     private companion object {

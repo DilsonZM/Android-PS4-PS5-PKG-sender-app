@@ -11,18 +11,22 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material.icons.outlined.CloudOff
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.MoreVert
 import androidx.compose.material.icons.outlined.Refresh
+import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material.icons.outlined.Storage
 import androidx.compose.material3.Button
 import androidx.compose.material3.DropdownMenu
@@ -39,12 +43,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
@@ -72,11 +78,26 @@ fun InstalledScreen(
     val state by viewModel.uiState.collectAsStateWithLifecycle()
     CollectUiMessages(viewModel.events)
     var pendingUninstall by remember { mutableStateOf<UninstallTarget?>(null) }
+    var searchQuery by rememberSaveable { mutableStateOf("") }
+    val games = state.titles
+        .filterNot { it.isSystem }
+        .sortedBy { it.title.lowercase() }
+    val filteredGames = if (searchQuery.isBlank()) {
+        games
+    } else {
+        games.filter {
+            it.title.contains(searchQuery, ignoreCase = true) ||
+                it.titleId.contains(searchQuery, ignoreCase = true)
+        }
+    }
+    val sections = filteredGames
+        .groupBy { gameSection(it.title) }
+        .toSortedMap()
 
     Column(modifier = Modifier.fillMaxSize()) {
         ScreenTopBar(
             title = "Juegos instalados",
-            subtitle = "PS4 · FTP GoldHEN + PS4RPI · Fase 1",
+            subtitle = "PS4 · FTP GoldHEN + PS4RPI",
             onBack = onBack,
             actions = {
                 IconButton(
@@ -87,6 +108,64 @@ fun InstalledScreen(
                 }
             },
         )
+
+        Surface(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp, vertical = 2.dp),
+            shape = RoundedCornerShape(18.dp),
+            color = MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.35f),
+            tonalElevation = 0.dp,
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(40.dp)
+                    .padding(horizontal = 12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Icon(
+                    imageVector = Icons.Outlined.Search,
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.size(18.dp),
+                )
+                BasicTextField(
+                    value = searchQuery,
+                    onValueChange = { searchQuery = it },
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp),
+                    singleLine = true,
+                    textStyle = MaterialTheme.typography.bodySmall.copy(
+                        color = MaterialTheme.colorScheme.onSurface,
+                    ),
+                    cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
+                    decorationBox = { innerTextField ->
+                        if (searchQuery.isEmpty()) {
+                            Text(
+                                text = "Buscar juego",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            )
+                        }
+                        innerTextField()
+                    },
+                )
+                if (searchQuery.isNotEmpty()) {
+                    IconButton(
+                        onClick = { searchQuery = "" },
+                        modifier = Modifier.size(28.dp),
+                    ) {
+                        Icon(
+                            imageVector = Icons.Outlined.Close,
+                            contentDescription = "Limpiar búsqueda",
+                            modifier = Modifier.size(16.dp),
+                        )
+                    }
+                }
+            }
+        }
 
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
@@ -138,34 +217,43 @@ fun InstalledScreen(
                 }
             }
 
-            if (state.titles.isNotEmpty()) {
+            if (searchQuery.isBlank() && games.isNotEmpty()) {
                 item {
                     InstalledSummary(
-                        titles = state.titles,
+                        titles = games,
                         lastCheckedAt = state.lastCheckedAt,
+                        itemLabel = "juego(s)",
                     )
                 }
             }
 
-            if (!state.loading && state.error == null && state.titles.isEmpty()) {
+            if (!state.loading && state.error == null && filteredGames.isEmpty()) {
                 item {
                     val ftpFailed = state.warning != null
                     EmptyState(
-                        title = if (ftpFailed) {
-                            "No se pudo leer la lista"
-                        } else {
-                            "No hay juegos instalados"
+                        title = when {
+                            ftpFailed -> "No se pudo leer la lista"
+                            searchQuery.isNotBlank() -> "Sin resultados"
+                            else -> "No hay juegos instalados"
                         },
-                        message = if (ftpFailed) {
-                            "Abre GoldHEN con FTP en el puerto 2121 y PS4RPI, " +
-                                "revisa la misma red y vuelve a comprobar."
-                        } else {
-                            "La PS4 no reportó juegos instalados en app.db."
+                        message = when {
+                            ftpFailed -> "Abre GoldHEN con FTP en el puerto 2121 y " +
+                                "PS4RPI, revisa la misma red y vuelve a comprobar."
+                            searchQuery.isNotBlank() -> "Probá con otro nombre o Title ID."
+                            else -> "La PS4 no reportó juegos instalados en app.db."
                         },
                         icon = if (ftpFailed) Icons.Outlined.CloudOff else Icons.Outlined.Storage,
-                        action = {
-                            Button(onClick = viewModel::refresh) {
-                                Text("Volver a comprobar")
+                        action = if (searchQuery.isNotBlank()) {
+                            {
+                                Button(onClick = { searchQuery = "" }) {
+                                    Text("Limpiar búsqueda")
+                                }
+                            }
+                        } else {
+                            {
+                                Button(onClick = viewModel::refresh) {
+                                    Text("Volver a comprobar")
+                                }
                             }
                         },
                     )
@@ -178,25 +266,36 @@ fun InstalledScreen(
                 }
             }
 
-            items(state.titles, key = { it.titleId }) { title ->
-                InstalledTitleCard(
-                    title = title,
-                    actionInProgress = state.actionInProgress,
-                    onUninstall = { pendingUninstall = it },
-                )
-            }
-
-            if (state.titles.isNotEmpty()) {
+            if (filteredGames.isNotEmpty()) {
                 item {
                     Text(
-                        text = "Fase 1: lista real leída de app.db por el FTP de GoldHEN " +
-                            "(puerto 2121); tamaños reportados por la PS4. La desinstalación se " +
-                            "envía a PS4RPI. Las actualizaciones/DLC solo aparecen si están en tu " +
-                            "biblioteca; el espacio libre total requiere un agente o app.db " +
-                            "ampliado en una fase posterior.",
-                        style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        text = if (searchQuery.isBlank()) {
+                            "Juegos instalados · A-Z"
+                        } else {
+                            "${filteredGames.size} resultado(s)"
+                        },
+                        style = MaterialTheme.typography.titleSmall,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(top = 4.dp),
                     )
+                }
+                sections.forEach { (letter, sectionGames) ->
+                    item(key = "letter-$letter") {
+                        Text(
+                            text = letter,
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary,
+                            modifier = Modifier.padding(start = 4.dp, top = 8.dp),
+                        )
+                    }
+                    items(sectionGames, key = { it.titleId }) { title ->
+                        InstalledTitleCard(
+                            title = title,
+                            actionInProgress = state.actionInProgress,
+                            onUninstall = { pendingUninstall = it },
+                        )
+                    }
                 }
             }
         }
@@ -222,10 +321,16 @@ fun InstalledScreen(
     }
 }
 
+private fun gameSection(title: String): String {
+    val first = title.trim().firstOrNull()?.uppercaseChar()
+    return if (first != null && first.isLetter()) first.toString() else "#"
+}
+
 @Composable
 private fun InstalledSummary(
     titles: List<InstalledTitle>,
     lastCheckedAt: Long?,
+    itemLabel: String,
 ) {
     val total = titles.sumOf { it.installedSizeBytes }
     val colors = listOf(
@@ -269,7 +374,7 @@ private fun InstalledSummary(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
             ) {
                 Text(
-                    text = "${titles.size} juego(s)",
+                    text = "${titles.size} $itemLabel",
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.SemiBold,
                 )
@@ -278,12 +383,6 @@ private fun InstalledSummary(
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.primary,
-                )
-                Text(
-                    text = "Tamaño reportado por la consola. El espacio libre total no está " +
-                        "disponible con PS4RPI.",
-                    style = MaterialTheme.typography.labelSmall,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
                 if (lastCheckedAt != null) {
                     Text(
@@ -400,7 +499,7 @@ private fun InstalledTitleCard(
     val categories = title.packages
         .map { PkgNaming.effectiveCategory(it.category, it.displayName) }
         .distinct()
-        .ifEmpty { listOf("gd") }
+        .ifEmpty { if (title.isSystem) emptyList() else listOf("gd") }
 
     OutlinedCard(
         modifier = Modifier.fillMaxWidth(),
@@ -431,22 +530,32 @@ private fun InstalledTitleCard(
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
-                FlowRow(
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                    verticalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    categories.forEach { category ->
-                        PackageKindPill(category)
+                if (title.isSystem) {
+                    Text(
+                        text = "App instalada",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                } else {
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(4.dp),
+                        verticalArrangement = Arrangement.spacedBy(4.dp),
+                    ) {
+                        categories.forEach { category ->
+                            PackageKindPill(category)
+                        }
                     }
                 }
             }
             Column(horizontalAlignment = Alignment.End) {
-                InstalledBadge()
-                IconButton(
-                    onClick = { menuExpanded = true },
-                    enabled = !actionInProgress,
-                ) {
-                    Icon(Icons.Outlined.MoreVert, contentDescription = "Gestionar")
+                InstalledBadge(label = if (title.isSystem) "App" else "Instalado")
+                if (!title.isSystem) {
+                    IconButton(
+                        onClick = { menuExpanded = true },
+                        enabled = !actionInProgress,
+                    ) {
+                        Icon(Icons.Outlined.MoreVert, contentDescription = "Gestionar")
+                    }
                 }
                 DropdownMenu(
                     expanded = menuExpanded,
@@ -505,7 +614,7 @@ private fun InstalledTitleCard(
 }
 
 @Composable
-private fun InstalledBadge() {
+private fun InstalledBadge(label: String = "Instalado") {
     Surface(
         color = MaterialTheme.colorScheme.primaryContainer,
         contentColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -521,7 +630,7 @@ private fun InstalledBadge() {
                 contentDescription = null,
                 modifier = Modifier.size(13.dp),
             )
-            Text(text = "Instalado", style = MaterialTheme.typography.labelSmall)
+            Text(text = label, style = MaterialTheme.typography.labelSmall)
         }
     }
 }

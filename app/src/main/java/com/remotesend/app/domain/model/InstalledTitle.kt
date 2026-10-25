@@ -13,6 +13,7 @@ data class InstalledTitle(
     val iconPath: String?,
     val installedSizeBytes: Long,
     val packages: List<PkgFile> = emptyList(),
+    val isSystem: Boolean = false,
 ) {
     val basePackage: PkgFile?
         get() = packages.firstOrNull {
@@ -35,6 +36,14 @@ data class InstalledTitle(
             )
         }
 }
+
+data class DiskSpace(
+    val totalBytes: Long,
+    val freeBytes: Long,
+    val availableBytes: Long,
+    val usedBytes: Long,
+    val path: String,
+)
 
 data class InstalledScanResult(
     val titles: List<InstalledTitle> = emptyList(),

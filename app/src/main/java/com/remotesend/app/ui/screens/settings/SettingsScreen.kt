@@ -1,6 +1,8 @@
 package com.remotesend.app.ui.screens.settings
 
 import android.Manifest
+import android.net.Uri
+import android.provider.OpenableColumns
 import android.content.pm.PackageManager
 import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -82,6 +84,7 @@ fun SettingsScreen(
         )
     }
     var confirmClearLogs by remember { mutableStateOf(false) }
+    var ftpUri by remember { mutableStateOf<Uri?>(null) }
 
     val notificationPermission = rememberLauncherForActivityResult(
         ActivityResultContracts.RequestPermission(),
@@ -96,6 +99,11 @@ fun SettingsScreen(
         ActivityResultContracts.OpenDocument(),
     ) { uri ->
         if (uri != null) viewModel.importBackup(uri)
+    }
+    val ftpPicker = rememberLauncherForActivityResult(
+        ActivityResultContracts.OpenDocument(),
+    ) { uri ->
+        ftpUri = uri
     }
 
     Column(modifier = Modifier.fillMaxSize()) {
@@ -270,6 +278,83 @@ fun SettingsScreen(
                 )
             }
 
+            SectionCard(
+                title = "Enviar archivo a PS4",
+                subtitle = "FTP GoldHEN · copia sin instalar",
+            ) {
+                Text(
+                    text = "Destino: /user/data/RemoteSend",
+                    style = MaterialTheme.typography.bodySmall,
+                )
+                Text(
+                    text = "Consola: ${state.consoleHost.ifBlank { "sin configurar" }} · puerto 2121",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+                OutlinedButton(
+                    onClick = { ftpPicker.launch(arrayOf("*/*")) },
+                    enabled = !state.ftpBusy,
+                ) {
+                    Icon(
+                        Icons.Outlined.FileUpload,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Text("Elegir archivo", modifier = Modifier.padding(start = 6.dp))
+                }
+                val selectedFtp = ftpUri
+                if (selectedFtp != null) {
+                    Text(
+                        text = "Seleccionado: ${fileDisplayName(context, selectedFtp)}",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                }
+                Button(
+                    onClick = { selectedFtp?.let(viewModel::uploadToPs4) },
+                    enabled = selectedFtp != null && !state.ftpBusy &&
+                        state.consoleHost.isNotBlank(),
+                ) {
+                    Icon(
+                        Icons.Outlined.FileUpload,
+                        contentDescription = null,
+                        modifier = Modifier.size(18.dp),
+                    )
+                    Text("Subir por FTP", modifier = Modifier.padding(start = 6.dp))
+                }
+                if (state.ftpBusy) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(16.dp),
+                            strokeWidth = 2.dp,
+                        )
+                        Text("Enviando archivo…")
+                    }
+                }
+                state.ftpMessage?.let { message ->
+                    Text(
+                        text = message,
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+                state.ftpRemotePath?.let { path ->
+                    Text(
+                        text = "Ruta en PS4: $path",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                }
+                Text(
+                    text = "El archivo se copia al almacenamiento interno de la PS4; " +
+                        "no se instala ni se ejecuta.",
+                    style = MaterialTheme.typography.labelSmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+
             SectionCard(title = "Datos y depuración") {
                 SettingSwitchRow(
                     title = "Modo desarrollador",
@@ -415,4 +500,23 @@ fun SettingsScreen(
             onDismiss = { confirmClearLogs = false },
         )
     }
+}
+
+
+private fun fileDisplayName(context: android.content.Context, uri: Uri): String {
+    context.contentResolver.query(
+        uri,
+        arrayOf(OpenableColumns.DISPLAY_NAME),
+        null,
+        null,
+        null,
+    )?.use { cursor ->
+        if (cursor.moveToFirst()) {
+            val index = cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME)
+            if (index >= 0) {
+                cursor.getString(index)?.let { return it }
+            }
+        }
+    }
+    return uri.lastPathSegment ?: "archivo"
 }

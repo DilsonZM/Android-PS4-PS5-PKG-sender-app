@@ -11,6 +11,7 @@ import com.remotesend.app.data.install.InstallationManager
 import com.remotesend.app.data.log.DataStoreLogger
 import com.remotesend.app.data.network.ConsoleClientFactory
 import com.remotesend.app.data.network.ConsoleDetector
+import com.remotesend.app.data.network.FtpUploader
 import com.remotesend.app.data.network.LanScanner
 import com.remotesend.app.data.persist.StateStore
 import com.remotesend.app.data.pkg.PkgMetadataReader
@@ -87,6 +88,8 @@ class AppContainer(
         clientFactory = clientFactory,
         logger = logger,
     )
+
+    val ftpUploader = FtpUploader(appContext, logger)
 
     val backupManager = BackupManager(application, stateStore, logger)
 
