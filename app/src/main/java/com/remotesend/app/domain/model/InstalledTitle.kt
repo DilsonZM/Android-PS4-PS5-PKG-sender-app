@@ -37,14 +37,6 @@ data class InstalledTitle(
         }
 }
 
-data class DiskSpace(
-    val totalBytes: Long,
-    val freeBytes: Long,
-    val availableBytes: Long,
-    val usedBytes: Long,
-    val path: String,
-)
-
 data class InstalledScanResult(
     val titles: List<InstalledTitle> = emptyList(),
     val warning: String? = null,

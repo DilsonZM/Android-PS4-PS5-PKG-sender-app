@@ -5,7 +5,6 @@ import com.remotesend.app.domain.model.ConsoleConfig
 import com.remotesend.app.domain.model.ConsoleHealth
 import com.remotesend.app.domain.model.ConsoleInstallResult
 import com.remotesend.app.domain.model.ConsoleType
-import com.remotesend.app.domain.model.DiskSpace
 import com.remotesend.app.domain.model.InstalledTitleStatus
 import com.remotesend.app.domain.model.PkgFile
 import com.remotesend.app.domain.model.TaskProgress
@@ -160,24 +159,6 @@ class Ps4RpiClient(
                 sizeBytes = json.longValue("size"),
             )
         }
-
-    override suspend fun diskSpace(): DiskSpace? = withContext(Dispatchers.IO) {
-        val response = post("/api/disk", buildJsonObject {})
-        val json = response.json ?: return@withContext null
-        if (json.stringValue("status") != "success") return@withContext null
-        val total = json.longValue("total") ?: 0L
-        if (total <= 0L) return@withContext null
-        val free = json.longValue("free") ?: 0L
-        val available = json.longValue("available") ?: free
-        val used = json.longValue("used") ?: (total - free).coerceAtLeast(0L)
-        DiskSpace(
-            totalBytes = total,
-            freeBytes = free,
-            availableBytes = available,
-            usedBytes = used,
-            path = json.stringValue("path") ?: "/user",
-        )
-    }
 
     override suspend fun uninstallGame(titleId: String): Boolean =
         uninstallCommand("/api/uninstall_game", "title_id", titleId)
